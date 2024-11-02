@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Success</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Group Created Successfully!</h1>
+        <p>Your group has been created and saved.</p>
+        <div class="buttons">
+            <button onclick="goToHome()">Go to Home</button>
+            <button onclick="createAnotherGroup()">Create Another Group</button>
+            <button onclick="addExpenses()">Add Expenses to Group</button>
+        </div>
+    </div>
+
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        function createAnotherGroup() {
+            window.location.href = 'addGroup.html';
+        }
+
+        function addExpenses() {
+            window.location.href = 'addExpense.html';
+        }
+    </script>
+</body>
+</html>

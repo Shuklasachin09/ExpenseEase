@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>History of Groups and Expenses</h1>
+        <div id="groupsContainer"></div>
+        <div class="buttons">
+            <button onclick="goToHome()">Go to Home</button>
+        </div>
+    </div>
+
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        function displayGroupsAndExpenses() {
+            const groupsContainer = document.getElementById('groupsContainer');
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+
+            if (groups.length === 0) {
+                groupsContainer.innerHTML = '<p>No groups found.</p>';
+                return;
+            }
+
+            groupsContainer.innerHTML = ''; // Clear the container
+
+            groups.forEach((group, index) => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'group';
+
+                const groupTitle = document.createElement('h2');
+                groupTitle.textContent = `Group Name: ${group.eventName}`;
+                groupDiv.appendChild(groupTitle);
+
+                const expensesList = document.createElement('ul');
+                if (group.expenses && group.expenses.length > 0) {
+                    group.expenses.forEach((expense, expenseIndex) => {
+                        const li = document.createElement('li');
+                        li.textContent = `${expense.description} - ₹${expense.amount} (Paid by: ${expense.paidBy})`;
+
+                        const deleteExpenseButton = document.createElement('button');
+                        deleteExpenseButton.textContent = 'Delete Expense';
+                        deleteExpenseButton.onclick = function() {
+                            deleteExpense(index, expenseIndex);
+                        };
+                        li.appendChild(deleteExpenseButton);
+
+                        expensesList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'No expenses added for this group.';
+                    expensesList.appendChild(li);
+                }
+
+                groupDiv.appendChild(expensesList);
+
+                // Create buttons for splitting options
+                const splitOptionsDiv = document.createElement('div');
+
+                const splitEquallyButton = document.createElement('button');
+                splitEquallyButton.textContent = 'Split Expense Equally';
+                splitEquallyButton.onclick = function() {
+                    showAddExpenseEquallyForm(group, index);
+                };
+                splitOptionsDiv.appendChild(splitEquallyButton);
+
+                const splitDifferentlyButton = document.createElement('button');
+                splitDifferentlyButton.textContent = 'Split Expense Differently';
+                splitDifferentlyButton.onclick = function() {
+                    showAddExpenseDifferentlyForm(group, index);
+                };
+                splitOptionsDiv.appendChild(splitDifferentlyButton);
+
+                groupDiv.appendChild(splitOptionsDiv);
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete Group';
+                deleteButton.onclick = function() {
+                    deleteGroup(index);
+                };
+                groupDiv.appendChild(deleteButton);
+
+                groupsContainer.appendChild(groupDiv);
+            });
+        }
+
+        function showAddExpenseEquallyForm(group, groupIndex) {
+            const groupDiv = document.getElementById('groupsContainer').children[groupIndex];
+            const existingForm = groupDiv.querySelector('.add-expense-form');
+
+            if (existingForm) {
+                existingForm.remove(); // Remove existing form if it exists
+            }
+
+            const totalAmountInput = document.createElement('input');
+            totalAmountInput.type = 'number';
+            totalAmountInput.placeholder = 'Total Amount';
+            totalAmountInput.required = true;
+
+            const descriptionInput = document.createElement('input');
+            descriptionInput.type = 'text';
+            descriptionInput.placeholder = 'Expense Description';
+            descriptionInput.required = true;
+
+            const paidBySelect = document.createElement('select');
+            group.participants.forEach(participant => {
+                const option = document.createElement('option');
+                option.value = participant;
+                option.textContent = participant;
+                paidBySelect.appendChild(option);
+            });
+
+            const addExpenseButton = document.createElement('button');
+            addExpenseButton.textContent = 'Add Expense';
+            addExpenseButton.onclick = function() {
+                const amount = parseFloat(totalAmountInput.value);
+                const amountPerPerson = (amount / group.participants.length).toFixed(2);
+                const paidBy = paidBySelect.value; // Get the selected payer
+                const description = descriptionInput.value; // Get the description
+                group.participants.forEach(participant => {
+                    addExpense(groupIndex, description, amountPerPerson, paidBy);
+                });
+                displayGroupsAndExpenses();
+            };
+
+            const addExpenseForm = document.createElement('div');
+            addExpenseForm.className = 'add-expense-form';
+            addExpenseForm.appendChild(descriptionInput);
+            addExpenseForm.appendChild(totalAmountInput);
+            addExpenseForm.appendChild(paidBySelect);
+            addExpenseForm.appendChild(addExpenseButton);
+            groupDiv.appendChild(addExpenseForm);
+        }
+
+        function showAddExpenseDifferentlyForm(group, groupIndex) {
+            const groupDiv = document.getElementById('groupsContainer').children[groupIndex];
+            const existingForm = groupDiv.querySelector('.add-expense-form');
+
+            if (existingForm) {
+                existingForm.remove(); // Remove existing form if it exists
+            }
+
+            const addExpenseForm = document.createElement('form');
+            addExpenseForm.className = 'add-expense-form';
+            addExpenseForm.onsubmit = function(event) {
+                event.preventDefault();
+                const expenseDescription = addExpenseForm.elements['expenseDescription'].value;
+
+                group.participants.forEach(participant => {
+                    const amount = addExpenseForm.elements[participant].value;
+                    const paidBy = addExpenseForm.elements[`paidBy_${participant}`].value;
+                    if (amount) {
+                        addExpense(groupIndex, expenseDescription, amount, paidBy);
+                    }
+                });
+
+                displayGroupsAndExpenses();
+            };
+
+            let participantsHTML = `<input type="text" name="expenseDescription" placeholder="Expense Description" required>`;
+            group.participants.forEach(participant => {
+                participantsHTML += `
+                    <div>
+                        <input type="number" name="${participant}" placeholder="${participant}'s Amount" required>
+                        <select name="paidBy_${participant}">
+                            ${group.participants.map(p => `<option value="${p}">${p}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+            });
+
+            addExpenseForm.innerHTML = participantsHTML + '<button type="submit">Add Expense</button>';
+            groupDiv.appendChild(addExpenseForm);
+        }
+
+        function addExpense(groupIndex, description, amount, paidBy) {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            const newExpense = { description, amount: parseFloat(amount), paidBy };
+
+            if (groups[groupIndex]) {
+                groups[groupIndex].expenses.push(newExpense);
+                localStorage.setItem('groups', JSON.stringify(groups));
+            }
+        }
+
+        function deleteGroup(index) {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            if (index > -1 && index < groups.length) {
+                const confirmDelete = confirm('Are you sure you want to delete this group?');
+                if (confirmDelete) {
+                    groups.splice(index, 1);
+                    localStorage.setItem('groups', JSON.stringify(groups));
+                    displayGroupsAndExpenses();
+                }
+            }
+        }
+
+        function deleteExpense(groupIndex, expenseIndex) {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            if (groups[groupIndex] && expenseIndex > -1 && expenseIndex < groups[groupIndex].expenses.length) {
+                groups[groupIndex].expenses.splice(expenseIndex, 1);
+                localStorage.setItem('groups', JSON.stringify(groups));
+                displayGroupsAndExpenses();
+            }
+        }
+
+        window.onload = displayGroupsAndExpenses;
+    </script>
+</body>
+</html>

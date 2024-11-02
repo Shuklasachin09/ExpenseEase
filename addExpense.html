@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Expenses</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Add Expenses to Group</h2>
+
+        <h3>Select Payer</h3>
+        <select id="payerDropdown"></select>
+
+        <h3>Expense Name</h3>
+        <input type="text" id="expenseName" placeholder="Enter description">
+
+        <h3>Amount</h3>
+        <input type="number" id="amount" placeholder="Enter amount in ₹" min="0" step="0.01">
+
+        <h3>Expense Date</h3>
+        <input type="date" id="expenseDate">
+
+        <div>
+            <button onclick="splitBillEqually()">Split Equally</button>
+            <button onclick="splitDifferently()">Split Differently</button>
+        </div>
+
+        <div class="member-inputs" id="memberInputs"></div>
+        <div class="result" id="result"></div>
+
+        <button onclick="finishAdding()">Finish Adding Expenses</button>
+    </div>
+
+    <script>
+        const groups = JSON.parse(localStorage.getItem('groups')) || [];
+        let participants = [];
+        const expenses = [];
+
+        if (groups.length > 0) {
+            participants = groups[groups.length - 1].participants;
+            const payerDropdown = document.getElementById('payerDropdown');
+            participants.forEach(participant => {
+                const option = document.createElement('option');
+                option.value = participant;
+                option.textContent = participant;
+                payerDropdown.appendChild(option);
+            });
+
+            if (participants.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No participants found';
+                payerDropdown.appendChild(option);
+            }
+        } else {
+            const payerDropdown = document.getElementById('payerDropdown');
+            const option = document.createElement('option');
+            option.value = '';
+            option.textContent = 'No groups found';
+            payerDropdown.appendChild(option);
+        }
+
+        function splitBillEqually() {
+            if (participants.length === 0) {
+                alert('No participants available to split the bill.');
+                return;
+            }
+
+            const expense = getExpenseDetails();
+            if (!expense) return;
+
+            const share = (expense.amount / participants.length).toFixed(2);
+            let resultText = `Expense: ${expense.name}\nDate: ${expense.date}\nEach member owes:\n`;
+
+            participants.forEach(participant => {
+                resultText += `${participant}: ₹${share}\n`;
+                expense.shares[participant] = parseFloat(share);
+            });
+
+            expenses.push(expense);
+            document.getElementById('result').textContent = resultText;
+
+            addExpense(groups.length - 1, expense.name, expense.amount, expense.paidBy);
+        }
+
+        function splitDifferently() {
+            if (participants.length === 0) {
+                alert('No participants available to split the bill.');
+                return;
+            }
+
+            const memberInputsDiv = document.getElementById('memberInputs');
+            memberInputsDiv.innerHTML = '';
+
+            participants.forEach(participant => {
+                const label = document.createElement('label');
+                label.textContent = `${participant}'s share: `;
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.placeholder = `Enter amount for ${participant}`;
+                input.className = 'member-amount';
+                input.dataset.participant = participant;
+
+                memberInputsDiv.appendChild(label);
+                memberInputsDiv.appendChild(input);
+                memberInputsDiv.appendChild(document.createElement('br'));
+            });
+
+            const submitButton = document.createElement('button');
+            submitButton.textContent = 'Submit';
+            submitButton.onclick = calculateSplit;
+            memberInputsDiv.appendChild(submitButton);
+        }
+
+        function calculateSplit() {
+            const inputs = document.querySelectorAll('.member-amount');
+            const totalAmount = parseFloat(document.getElementById('amount').value);
+            const expense = getExpenseDetails(true);
+            if (!expense) return;
+
+            let totalEntered = 0;
+            let resultText = `Expense: ${expense.name}\nDate: ${expense.date}\nCustom split:\n`;
+
+            inputs.forEach(input => {
+                const amount = parseFloat(input.value);
+                const participant = input.dataset.participant;
+
+                if (isNaN(amount) || amount < 0) {
+                    alert('Please enter valid amounts.');
+                    return;
+                }
+
+                totalEntered += amount;
+                expense.shares[participant] = amount;
+                resultText += `${participant}: ₹${amount.toFixed(2)}\n`;
+            });
+
+            if (totalEntered !== totalAmount) {
+                alert(`Total entered (₹${totalEntered.toFixed(2)}) does not match the bill amount (₹${totalAmount.toFixed(2)}).`);
+                return;
+            }
+
+            expenses.push(expense);
+            document.getElementById('result').textContent = resultText;
+
+            addExpense(groups.length - 1, expense.name, totalAmount, expense.paidBy);
+        }
+
+        function getExpenseDetails(skipValidation = false) {
+            const name = document.getElementById('expenseName').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = document.getElementById('expenseDate').value;
+            const payer = document.getElementById('payerDropdown').value;
+
+            if (!skipValidation && (!name || isNaN(amount) || !date || !payer)) {
+                alert('Please fill all fields correctly.');
+                return null;
+            }
+
+            return { name, amount, date, paidBy: payer, shares: {} };
+        }
+
+        function finishAdding() {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+
+            if (groups.length > 0) {
+                groups[groups.length - 1].expenses = expenses;
+                localStorage.setItem('groups', JSON.stringify(groups));
+            }
+
+            alert('Expenses added successfully!');
+            window.location.href = 'index.html';
+        }
+
+        function addExpense(groupIndex, description, amount, paidBy) {
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            const group = groups[groupIndex];
+            const totalAmount = parseFloat(amount);
+            const participants = group.participants;
+            const amountPerPerson = totalAmount / participants.length;
+
+            // Initialize or update balances
+            group.balances = group.balances || {};
+            participants.forEach(participant => {
+                if (!group.balances[participant]) {
+                    group.balances[participant] = 0;
+                }
+            });
+
+            // Update balances based on who paid
+            participants.forEach(participant => {
+                if (participant === paidBy) {
+                    group.balances[participant] += totalAmount - amountPerPerson;
+                } else {
+                    group.balances[participant] -= amountPerPerson;
+                }
+            });
+
+            const newExpense = { description, amount: totalAmount, paidBy };
+            group.expenses.push(newExpense);
+            localStorage.setItem('groups', JSON.stringify(groups));
+        }
+    </script>
+</body>
+</html>

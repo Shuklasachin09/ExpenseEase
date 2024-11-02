@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group Manager - Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+</style>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">Expense Ease</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="history.html">History</a></li>
+      <li><a href="addGroup.html">Create Group</a></li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <h1>Your Groups</h1>
+    <div id="groupList"></div>
+  </div>
+
+  <script>
+    const groupList = document.getElementById('groupList');
+
+    // Load and display groups from localStorage
+    function loadGroups() {
+      const groups = JSON.parse(localStorage.getItem('groups')) || [];
+
+      if (groups.length === 0) {
+        groupList.innerHTML = '<p>No groups found.</p>';
+      } else {
+        groups.forEach(group => {
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'group-item';
+
+          // Calculate total expense
+          const totalExpense = group.expenses ? group.expenses.reduce((sum, expense) => sum + expense.amount, 0) : 0;
+
+          // Calculate members' balances, ensuring they are initialized
+          const membersBalances = calculateBalances(group.expenses, group.participants);
+
+          groupDiv.innerHTML = `
+            <h2>${group.eventName}</h2>
+            <p>Total Expense: ₹${totalExpense.toFixed(2)}</p>
+            <p>Members:</p>
+            <ul>
+              ${membersBalances.map(member => {
+                const balanceText = member.balance >= 0 
+                  ? `will recieve ₹${member.balance.toFixed(2)}` 
+                  : `needs to pay ₹${Math.abs(member.balance).toFixed(2)}`;
+                return `<li>${member.name}: ${balanceText}</li>`;
+              }).join('')}
+            </ul>
+          `;
+
+          groupList.appendChild(groupDiv);
+        });
+      }
+    }
+// Function to calculate and initialize balances for each member
+function calculateBalances(expenses, members) {
+  // Initialize balances for each member
+  let balances = members.map(name => ({ name, balance: 0 }));
+
+  // Calculate total expenses to find how much each member should have paid
+  let totalExpenses = 0;
+
+  // Loop through each expense
+  expenses.forEach(expense => {
+    totalExpenses += expense.amount; // Sum up the total expenses
+
+    // Find the member who paid and update their balance
+    const payer = balances.find(member => member.name === expense.paidBy);
+    if (payer) {
+      payer.balance += expense.amount; // Add the total amount paid by the payer
+    }
+  });
+
+  // Calculate the fair share for each member
+  const fairShare = totalExpenses / members.length;
+
+  // Adjust balances for each member
+  balances.forEach(member => {
+    member.balance -= fairShare; // Subtract the fair share from each member's balance
+  });
+
+  return balances;
+}
+
+
+    window.onload = loadGroups;
+  </script>
+</body>
+</html>

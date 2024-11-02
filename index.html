@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    body{
+        background-color: #333;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    }
+    .navbar {
+    background-color: rgba(0.8, 0.8,0.8, 0.8); /* Dark background */
+    padding: 10px 20px;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.logo {
+    color: white;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 20px; /* Space between links */
+}
+
+.nav-links li {
+    display: inline; /* Inline list items */
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: #ff5733; /* Change color on hover */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-links {
+        flex-direction: column; /* Stack links on smaller screens */
+        background-color: #333; /* Dark background */
+        position: absolute; /* Absolute positioning for dropdown */
+        top: 50px; /* Positioning from the top */
+        left: 0;
+        right: 0;
+        display: none; /* Hide by default */
+    }
+    .navbar.active .nav-links {
+        display: flex; /* Show on active */
+    }
+    .navbar .container {
+        flex-direction: column; /* Stack container items */
+        align-items: flex-start; /* Align items to the left */
+    }
+}
+.main{
+    
+    align-items: center;
+    justify-content: space-around;
+    margin: 10%;
+    color: white;
+}
+.homeimg{
+    height: 55vh;
+    width: 35vw;
+}
+.login{
+    height: 50px;
+    width: 100px;
+    background-color: rgb(12, 106, 194);
+    color: white;
+    border-radius: 15px;
+    border: 1px solid black;
+}
+.signup{
+    height: 50px;
+    width: 100px;
+    background-color: rgb(12, 106, 194);
+    color: white;
+    border-radius: 15px;
+    border: 1px solid black;
+}
+.box1,.box2,.box3,.box4,.box5{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 10%;
+    gap: 5%;
+}
+.footer {
+    background-color: #333;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 14px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.footer-section {
+    flex: 1;
+    min-width: 250px;
+    margin: 10px;
+}
+
+.footer-section h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.footer-section p, .footer-links {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    margin-bottom: 5px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: #ff5733;
+}
+
+.social-icons a {
+    margin: 0 10px;
+    display: inline-block;
+    color: white;
+}
+
+.footer-bottom {
+    margin-top: 20px;
+    border-top: 1px solid #444;
+    padding-top: 10px;
+}
+.footerimg{
+    height: 20px;
+    width: 20px;
+}
+.mainlogo{
+height: 100px;
+width: 150px;
+}
+.dibba{
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+</style>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="dibba">
+                <img class="mainlogo" src="truelogo.png" alt="">
+               
+            </div>
+            
+           
+            <ul class="nav-links">
+                <li><a href="">Login</a></li>
+                <li><a href="">Signup</a></li>
+                <li><a href="">About Us</a></li>
+                <li><a href="">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+
+    <div class="main">
+        <div class="box1">
+            <div class="text">
+                <h1>Welcome to the EXPENSE EASE</h1>
+                <h2>Easy way of splitting group expenses</h2>
+                <h2>The simplest way to calculate who owes what</h2>
+               <a href="login.html"><button class="login">Login</button></a> 
+               <a href="signup.html"> <button class="signup">Sign Up</button></a>
+               <a href="home.html"><button class="login">Start</button></a>
+               
+            </div>
+            <div class="img">
+                <img class="homeimg" src="homeimg.png" alt="">
+            </div>
+        </div>
+        
+      <div class="box2">
+        <div class="img">
+            <img class="homeimg" src="homeimg.avif" alt="">
+           </div>
+    
+        <div class="text1">
+            <h1>Easily Manage Your Expenses: Split, Share, and Simplify!</h1>
+            <h4>Create groups effortlessly and track shared expenses with just a few clicks. Our
+                 platform makes splitting bills simple and transparent, ensuring everyone stays in the loop!</h4>
+           </div>
+           
+      </div>
+
+
+      <div class="box3">
+        <div class="text1">
+            <h1>Stay Informed: Your Transaction History at a Glance</h1>
+            <h4>Access a detailed record of all your transactions, ensuring you never miss a beat.
+                 Review, analyze, and manage your expenses with ease to keep your financial goals on track</h4>
+           </div>
+        <div class="img">
+            <img class="homeimg" src="homeimg1.avif" alt="">
+           </div>
+      </div>
+
+
+
+      <div class="box4">
+        <div class="img">
+            <img class="homeimg" src="homeimg2.jpg" alt="">
+           </div>
+    
+        <div class="text1">
+            <h1>Know Your Balance: Who Owes What!</h1>
+            <h4>Stay organized and avoid awkward moments with 
+                clear insights on outstanding debts. Easily track who owes you and how much, making bill settling a breeze!</h4>
+           </div>
+           
+      </div>
+
+      <div class="box5">
+        <div class="text1">
+            <h1>Responsive Design, Seamless Experience!</h1>
+            <h4>Enjoy a smooth and consistent browsing experience across all devices. Whether on a phone,
+                 tablet, or desktop, our website adapts beautifully to keep you connected and efficient!</h4>
+           </div>
+        <div class="img">
+            <img class="homeimg" src="homeimg3.jpg" alt="">
+           </div>
+      </div>
+
+</div>
+
+
+<footer class="footer">
+    <div class="footer-container">
+        <div class="footer-section">
+            <h4>About Expense Ease</h4>
+            <p>Expense Ease helps you easily manage and split group expenses, keeping your finances organized and transparent.</p>
+        </div>
+        <div class="footer-section">
+            <h4>Quick Links</h4>
+            <ul class="footer-links">
+                <li><a href="">About Us</a></li>
+                <li><a href="">Contact Us</a></li>
+                <li><a href="">FAQ</a></li>
+            </ul>
+        </div>
+        <div class="footer-section">
+            <h4>Connect With Us</h4>
+            <div class="social-icons">
+                <a href=""><img class="footerimg" src="fblogo.png" alt="Facebook"></a>
+                <a href=""><img class="footerimg" src="xlogo.png" alt="Twitter"></a>
+                <a href=""><img class="footerimg" src="iglogo.png" alt="Instagram"></a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>&copy; 2024 Expense Ease. All rights reserved.</p>
+    </div>
+</footer>
+
+    
+</body>
+</html>

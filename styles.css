@@ -1,0 +1,263 @@
+:root {
+    --primary: #333; /* Dark Gray */
+    --accent: rgb(12, 106, 194); /* Bright Blue */
+}
+
+/* Reset & basic body styling */
+body {
+    margin: 0;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    background-color: #F9F9F9; /* Light background for contrast */
+    color: var(--primary);
+    line-height: 1.6;
+}
+
+/* Navbar styling */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--primary); /* Dark Gray */
+    color: #FFFFFF; /* Light Text Color for contrast */
+}
+
+.navbar .logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links li a {
+    color: #FFFFFF; /* Light Text Color for links */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links li a:hover {
+    color: var(--accent); /* Bright Blue on hover */
+}
+
+/* Container styling */
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #FFFFFF; /* White for container background */
+    border: 1px solid var(--primary); /* Dark Gray border */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: var(--primary); /* Dark Gray for headings */
+    text-align: center;
+}
+
+/* Button styling */
+button {
+    background-color: var(--accent); /* Bright Blue for buttons */
+    color: #FFFFFF; /* Light Text Color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: var(--primary); /* Dark Gray on hover */
+}
+
+/* Input fields */
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid var(--primary); /* Dark Gray border */
+    border-radius: 5px;
+}
+
+/* Group items styling */
+.group-item {
+    background-color: #F9F9F9; /* Light Gray for group items */
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    color: var(--primary); /* Dark Gray text */
+}
+
+.group-item h2 {
+    color: var(--primary); /* Dark Gray for headings in groups */
+}
+
+/* Buttons for groups and expenses */
+.group button {
+    background-color: var(--primary); /* Dark Gray for group buttons */
+    color: #FFFFFF; /* Light Text Color */
+    border: none;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.group button:hover {
+    background-color: var(--accent); /* Bright Blue on hover */
+}
+
+/* History page specific */
+.group {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid var(--primary); /* Dark Gray border */
+    border-radius: 5px;
+    background-color: #FFFFFF; /* White for background */
+}
+
+.group h2 {
+    color: var(--primary); /* Dark Gray for headings */
+}
+
+/* Form for adding participants */
+.person-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.participant-input {
+    flex: 1;
+    margin-left: 10px;
+    padding: 8px;
+    border: 1px solid var(--accent); /* Bright Blue border */
+    border-radius: 5px;
+}
+
+.submit-btn {
+    background-color: var(--accent); /* Bright Blue */
+    color: #FFFFFF; /* Light Text Color */
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.submit-btn:hover {
+    background-color: var(--primary); /* Dark Gray on hover */
+}
+/* General Responsive Styling */
+@media (max-width: 1024px) {
+    .navbar {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 0.5rem;
+    }
+  
+    .nav-links {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0;
+    }
+  
+    .nav-links li {
+      text-align: left;
+    }
+  
+    .container {
+      max-width: 90%;
+      padding: 1rem;
+    }
+  
+    h1, h2, h3 {
+      font-size: 1.8rem;
+    }
+  
+    button {
+      font-size: 0.9rem;
+      padding: 8px 12px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .logo {
+      font-size: 1.2rem;
+    }
+  
+    .nav-links {
+      gap: 0.5rem;
+      width: 100%;
+      display: block;
+      padding: 0.5rem 0;
+    }
+  
+    .container {
+      padding: 1rem;
+    }
+  
+    .group-item {
+      padding: 0.8rem;
+    }
+  
+    input, select {
+      padding: 6px;
+    }
+  
+    h1, h2, h3 {
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    body {
+      font-size: 0.9rem;
+    }
+  
+    .navbar {
+      padding: 0.5rem;
+      align-items: center;
+    }
+  
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      align-items: center;
+    }
+  
+    .logo {
+      font-size: 1rem;
+    }
+  
+    .container {
+      max-width: 100%;
+      padding: 0.5rem;
+    }
+  
+    h1 {
+      font-size: 1.3rem;
+    }
+  
+    h2 {
+      font-size: 1.1rem;
+    }
+  
+    .group-item {
+      padding: 0.5rem;
+    }
+  
+    button {
+      padding: 6px 10px;
+      font-size: 0.8rem;
+    }
+  }
+  

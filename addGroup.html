@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Group</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    
+</style>
+<body>
+    <div class="container">
+        <h2>Create a Group</h2>
+
+        <!-- Event Name Input -->
+        <div class="input-group">
+            <h3>Event Name</h3>
+            <input id="eventName" type="text" placeholder="Enter event name">
+        </div>
+
+        <!-- Participants Section -->
+        <div class="input-group">
+            <h3>Participants</h3>
+            <div id="participants">
+                <div class="person-container">
+                    <label for="person1">Person 1:</label>
+                    <input type="text" id="person1" class="participant-input" placeholder="Enter name">
+                </div>
+                <div class="person-container">
+                    <label for="person2">Person 2:</label>
+                    <input type="text" id="person2" class="participant-input" placeholder="Enter name">
+                </div>
+            </div>
+            <button id="addPersonBtn" onclick="addPerson()">Add Person</button>
+        </div>
+
+        <!-- Create Group Button -->
+        <button class="submit-btn" onclick="createGroup()">Create Group</button>
+    </div>
+
+    <script>
+        let personCount = 2;
+
+        // Function to dynamically add new participants
+        function addPerson() {
+            personCount++;
+
+            const participantsDiv = document.getElementById('participants');
+
+            // Create a container for the new participant input
+            const personContainer = document.createElement('div');
+            personContainer.className = 'person-container';
+
+            // Create the label for the new participant
+            const newPersonLabel = document.createElement('label');
+            newPersonLabel.textContent = `Person ${personCount}:`;
+
+            // Create the input field for the new participant
+            const newInput = document.createElement('input');
+            newInput.type = 'text';
+            newInput.placeholder = 'Enter name';
+            newInput.className = 'participant-input';
+
+            // Append the label and input to the container
+            personContainer.appendChild(newPersonLabel);
+            personContainer.appendChild(newInput);
+
+            // Append the new participant container to the participants section
+            participantsDiv.appendChild(personContainer);
+        }
+
+        // Function to create the group and save it to localStorage
+        function createGroup() {
+            const eventName = document.getElementById('eventName').value.trim();
+            const participantInputs = document.querySelectorAll('.participant-input');
+
+            // Extract participant names, ignoring empty inputs
+            const participants = Array.from(participantInputs)
+                .map(input => input.value.trim())
+                .filter(name => name.length > 0);
+
+            // Validate input: Event name and participants must be provided
+            if (!eventName) {
+                alert('Please provide a valid event name.');
+                return;
+            }
+
+            if (participants.length < 2) {
+                alert('Please add at least two participants.');
+                return;
+            }
+
+            // Initialize balances for each participant
+            const balances = {};
+            participants.forEach(participant => {
+                balances[participant] = 0; // Set initial balance to 0
+            });
+
+            // Save group details to localStorage
+            const groups = JSON.parse(localStorage.getItem('groups')) || [];
+            groups.push({ eventName, participants, expenses: [], balances });
+            localStorage.setItem('groups', JSON.stringify(groups));
+
+            // Redirect to success page or show success message
+            alert('Group created successfully!');
+            window.location.href = 'success.html';
+        }
+    </script>
+</body>
+</html>
